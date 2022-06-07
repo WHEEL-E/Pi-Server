@@ -1,8 +1,9 @@
 const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const cors = require('cors')
+const { spawn } = require("child_process");
 
-// Add messages when sockets open and close connections
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
   socket.on('disconnect', reason => {
@@ -16,15 +17,37 @@ io.on('connection', socket => {
   socket.on("action-stop", stop => { console.log(stop) })
 });
 
-// // Broadcast the current server time as global message, every 1s
-// setInterval(() => {
-//   io.sockets.emit('time-msg', { time: new Date().toISOString() });
-// }, 1000);
+let command
 
-// Show the index.html by default
+const runCommand = (command, args) => {
+  command = spawn(command, args ? [args] : []); // (command, argument to the command)
+
+  command.stdout.on("data", data => {
+    console.log(`stdout: ${data}`);
+  });
+
+  command.stderr.on("data", data => {
+    console.log(`stderr: ${data}`);
+  });
+
+  command.on('error', (error) => {
+    console.log(`error: ${error.message}`);
+  });
+
+  command.on("close", code => {
+    console.log(`child process exited with code ${code}`);
+  });
+}
+
+const stopCommand = () => {
+  if (command) {
+    command.kill()
+  }
+}
+
+
 app.get('/', (req, res) => res.sendFile('index.html'));
 
-// Start the express server
 http.listen(3000, function () {
   console.log('listening on *:3000');
 });
