@@ -6,13 +6,15 @@ const { spawn } = require("child_process");
 
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
+  runCommand("ls")
   socket.on('disconnect', reason => {
+    stopCommand()
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
   });
 
   socket.on("handShake", msg => { console.log(msg) });
 
-  socket.on("action", action => { console.log(action) })
+  socket.on("action", action => { console.log(action); })
 
   socket.on("action-stop", stop => { console.log(stop) })
 });
