@@ -13,6 +13,10 @@ exports.initPort = () => {
     });
 }
 
+exports.closePort = () => {
+    port.close();
+}
+
 exports.executeAction = (action) => {
     console.log("Executing action:", action);
     port.write(action)

@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cors = require('cors')
-const { executeAction, initPort } = require('./UARTFunctions');
+const { executeAction, initPort, closePort } = require('./UARTFunctions');
 
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
@@ -10,6 +10,7 @@ io.on('connection', socket => {
 
   socket.on('disconnect', reason => {
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
+    closePort();
   });
 
   socket.on("action", action => { executeAction(action) })
