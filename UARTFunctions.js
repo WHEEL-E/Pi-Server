@@ -11,10 +11,7 @@ exports.initPort = () => {
         bytesize: SerialPort.EIGHTBITS,
         write_timeout: 1.0,
     });
-
-    console.log("Port initialized", port);
 }
-
 
 exports.executeAction = (action) => {
     console.log("Executing action:", action);
