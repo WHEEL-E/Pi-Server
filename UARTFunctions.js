@@ -7,9 +7,7 @@ exports.initPort = () => {
         path: "/dev/ttyS0",
         baudRate: 115200,
         parity: SerialPort.PARITY_NONE,
-        stopbits: SerialPort.STOPBITS_ONE,
-        bytesize: SerialPort.EIGHTBITS,
-        write_timeout: 1.0,
+        stopBits: SerialPort.STOPBITS_ONE,
     });
 }
 

@@ -4,6 +4,8 @@ const io = require('socket.io')(http);
 const cors = require('cors')
 const { executeAction, initPort, closePort } = require('./UARTFunctions');
 
+app.use(cors());
+
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
   initPort();
@@ -17,8 +19,6 @@ io.on('connection', socket => {
 
   socket.on("action-stop", stop => { executeAction(stop) })
 });
-
-app.use(cors());
 
 app.get('/', (req, res) => res.sendFile('index.html'));
 
