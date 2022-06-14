@@ -8,6 +8,7 @@ exports.initPort = () => {
         baudRate: 115200,
         parity: SerialPort.PARITY_NONE,
         stopBits: SerialPort.STOPBITS_ONE,
+        autoOpen: true
     });
 }
 
