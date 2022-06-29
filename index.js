@@ -2,19 +2,19 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cors = require('cors')
-const { executeAction, initPort, closePort } = require('./UARTFunctions');
+const { executeAction, initDrivingPort, closeDrivingPort, HealthPort } = require('./UARTFunctions');
 
-initPort();
+initDrivingPort();
 
 app.use(cors());
 
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
-  initPort();
+  initDrivingPort();
 
   socket.on('disconnect', reason => {
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
-    closePort();
+    closeDrivingPort();
   });
 
   socket.on("action", action => { executeAction(action) })
@@ -26,6 +26,15 @@ io.on('connection', socket => {
     }, 500);
   })
 });
+
+
+HealthPort.on("readable", () => {
+  console.log("Data", HealthPort.read())
+})
+
+HealthPort.on("data", (data) => {
+  console.log('Data:', data)
+})
 
 app.get('/', (req, res) => res.sendFile('index.html'));
 
