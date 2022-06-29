@@ -4,17 +4,17 @@ const io = require('socket.io')(http);
 const cors = require('cors')
 const { executeAction, initPort, closePort, port } = require('./UARTFunctions');
 
-initPort();
+initDrivingPort();
 
 app.use(cors());
 
 io.on('connection', socket => {
   console.log(`[${socket.id}] socket connected`);
-  initPort();
+  initDrivingPort();
 
   socket.on('disconnect', reason => {
     console.log(`[${socket.id}] socket disconnected - ${reason}`);
-    closePort();
+    closeDrivingPort();
   });
 
   socket.on("action", action => { executeAction(action) })
