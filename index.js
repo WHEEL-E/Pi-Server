@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cors = require('cors')
-const { executeAction, initPort, closePort } = require('./UARTFunctions');
+const { executeAction, initPort, closePort, port } = require('./UARTFunctions');
 
 initPort();
 
@@ -26,6 +26,14 @@ io.on('connection', socket => {
     }, 500);
   })
 });
+
+port.on("readable", () => {
+  console.log("Data", port.read())
+})
+
+port.on("data", (data) => {
+  console.log('Data:', data)
+})
 
 app.get('/', (req, res) => res.sendFile('index.html'));
 
