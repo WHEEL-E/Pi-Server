@@ -20,7 +20,3 @@ exports.executeAction = (action) => {
     console.log("Executing action:", action);
     Port.write(action)
 }
-
-if (Port) {
-    exports.Port = Port
-}

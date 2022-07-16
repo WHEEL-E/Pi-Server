@@ -2,7 +2,15 @@ const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const cors = require('cors')
-const { executeAction, initPort, closePort, Port } = require('./UARTFunctions');
+const { executeAction, initPort, closePort } = require('./UARTFunctions');
+const mqtt = require("mqtt");
+
+const client = mqtt.connect("http://localhost:1883", {
+  username: "HealthData",
+  password: "123456789",
+});
+
+client.subscribe("mqtt/test"); //your mqtt topic
 
 app.use(cors());
 
@@ -23,15 +31,22 @@ io.on('connection', socket => {
       executeAction(stop)
     }, 500);
   })
+
+  client.on("message", (topic, payload) => {
+    console.log("Recevied")
+    console.log(payload.toString());
+    // Construct Object Based on data coming from Node MCU
+    const dataObject = {
+      SPO2: payload.SPO2,
+      Heartbeat: payload.Heartbeat,
+      time: new Date(),
+      user_id: 1
+    }
+
+    socket.emit("HealthData", JSON.stringify(dataObject))
+  });
 });
 
-Port.on("readable", () => {
-  console.log("Data", Port.read())
-})
-
-Port.on("data", (data) => {
-  console.log('Data:', data)
-})
 
 app.get('/', (req, res) => res.sendFile('index.html'));
 
